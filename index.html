@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shamaro Printing Enterprise</title>
+
+  <!-- Tailwind CDN with custom config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            shamaroGold: '#D4AF37',
+            shamaroYellow: '#FFD700',
+            shamaroBlack: '#111111'
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Optional: Google Fonts preload -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Small visual polish */
+    :root { color-scheme: light; }
+    .container-max { max-width: 1100px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+  </style>
+</head>
+<body class="antialiased bg-white text-shamaroBlack font-sans">
+
+  <!-- NAVBAR -->
+  <header class="border-b border-gray-100">
+    <div class="container-max flex items-center justify-between py-4">
+      <a href="#" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-md bg-shamaroGold flex items-center justify-center shadow">
+          <span class="text-white font-bold">S</span>
+        </div>
+        <div>
+          <span class="block text-lg font-semibold">Shamaro</span>
+          <span class="block text-xs text-gray-500 -mt-0.5">Printing Enterprise</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#" class="text-gray-700 hover:text-shamaroGold">Services</a>
+        <a href="#" class="text-gray-700 hover:text-shamaroGold">Pricing</a>
+        <a href="#" class="text-gray-700 hover:text-shamaroGold">Portfolio</a>
+        <a href="#" class="text-gray-700 hover:text-shamaroGold">Contact</a>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#" class="px-4 py-2 rounded-md bg-shamaroGold text-white text-sm font-medium shadow hover:brightness-95">Get a Quote</a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+        <svg id="menuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+        </svg>
+        <svg id="menuClose" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-100">
+      <div class="px-4 py-4 space-y-3">
+        <a href="#" class="block text-gray-700">Services</a>
+        <a href="#" class="block text-gray-700">Pricing</a>
+        <a href="#" class="block text-gray-700">Portfolio</a>
+        <a href="#" class="block text-gray-700">Contact</a>
+        <a href="#" class="block mt-2 px-4 py-2 rounded-md bg-shamaroGold text-white text-center">Get a Quote</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main class="min-h-[70vh] flex items-center">
+    <div class="container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-16">
+      <section>
+        <p class="inline-flex items-center gap-2 text-sm text-shamaroGold font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M2 11a1 1 0 011-1h3V7a1 1 0 112 0v3h3a1 1 0 110 2H8v3a1 1 0 11-2 0v-3H3a1 1 0 01-1-1z"/>
+          </svg>
+          Fast Turnaround
+        </p>
+
+        <h1 class="mt-6 text-4xl md:text-5xl font-serif font-bold leading-tight text-shamaroBlack">
+          Premium Print Solutions for Businesses and Creatives
+        </h1>
+
+        <p class="mt-4 text-gray-600 max-w-xl">
+          High-quality offset and digital printing, custom packaging, and branded collateral delivered on time. Local service with global standards.
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#" class="inline-flex items-center gap-3 px-6 py-3 rounded-md bg-shamaroGold text-white font-medium shadow hover:brightness-95">
+            Get a Quote
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+
+          <a href="#" class="inline-flex items-center gap-3 px-6 py-3 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50">
+            View Portfolio
+          </a>
+        </div>
+
+        <ul class="mt-8 flex flex-wrap gap-6 text-sm text-gray-600">
+          <li><strong class="text-shamaroBlack">1000+</strong> orders fulfilled</li>
+          <li><strong class="text-shamaroBlack">Same-day proofs</strong></li>
+          <li><strong class="text-shamaroBlack">Nationwide delivery</strong></li>
+        </ul>
+      </section>
+
+      <aside class="flex items-center justify-center">
+        <div class="w-full max-w-md rounded-xl overflow-hidden shadow-lg">
+          <img src="https://images.unsplash.com/photo-1581091012184-7b3b1f6b6b2b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="Printing press and samples" class="w-full h-72 object-cover">
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-gray-100">
+    <div class="container-max py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="text-sm text-gray-600">
+        © <span id="year"></span> Shamaro Printing Enterprise. All rights reserved.
+      </div>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="#" class="text-gray-600 hover:text-shamaroGold">Privacy</a>
+        <a href="#" class="text-gray-600 hover:text-shamaroGold">Terms</a>
+        <a href="#" class="text-gray-600 hover:text-shamaroGold">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Minimal JS -->
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOpen = document.getElementById('menuOpen');
+    const menuClose = document.getElementById('menuClose');
+
+    menuBtn?.addEventListener('click', () => {
+      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      menuBtn.setAttribute('aria-expanded', String(!expanded));
+      mobileMenu.classList.toggle('hidden');
+      menuOpen.classList.toggle('hidden');
+      menuClose.classList.toggle('hidden');
+    });
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
