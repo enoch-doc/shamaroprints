@@ -1,337 +1,1407 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shamaro Printing Enterprise | Concept to Creation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shamaro Printing Enterprise | Concept to Creation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+/* ═══════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════ */
+:root {
+  --gold: #C8A84B;
+  --gold-bright: #E8C96A;
+  --gold-dim: #7A6328;
+  --gold-glow: rgba(200,168,75,0.15);
+  --ink: #060606;
+  --ink2: #0E0E0C;
+  --smoke: #161612;
+  --ash: #222220;
+  --dust: #8A8A80;
+  --fog: #C8C8C0;
+  --paper: #F4EFE4;
+  --white: #FAFAF6;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--ink);
+  color: var(--white);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+a { text-decoration: none; color: inherit; cursor: none; }
+img { display: block; max-width: 100%; }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        shamaroGold: '#D4AF37',
-                        shamaroBlack: '#0a0a0a',
-                        shamaroDarkGray: '#151515',
-                    },
-                    fontFamily: {
-                        serif: ['"Playfair Display"', 'serif'],
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #e5e5e5;
-            overflow-x: hidden;
-        }
+/* ═══════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════ */
+#cur {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--gold); border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%,-50%);
+  transition: width .25s, height .25s, opacity .25s;
+  mix-blend-mode: difference;
+}
+#cur-trail {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(200,168,75,.4);
+  border-radius: 50%;
+  pointer-events: none; z-index: 99998;
+  transform: translate(-50%,-50%);
+  transition: transform .12s ease-out, width .3s, height .3s;
+}
+body.hovering #cur { width: 48px; height: 48px; opacity: .3; }
+body.hovering #cur-trail { width: 48px; height: 48px; border-color: rgba(200,168,75,.8); }
 
-        /* Subtle Noise Overlay for Texture */
-        .noise-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.03;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png');
-        }
+/* ═══════════════════════════════════
+   NAV
+═══════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 0 60px;
+  height: 80px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .4s, backdrop-filter .4s;
+}
+nav.scrolled {
+  background: rgba(6,6,6,.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(200,168,75,.12);
+}
+.logo-wrap { display: flex; flex-direction: column; gap: 3px; }
+.logo-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 700;
+  letter-spacing: .28em; color: var(--gold);
+}
+.logo-sub {
+  font-size: 8.5px; letter-spacing: .55em;
+  text-transform: uppercase; color: var(--dust); font-weight: 300;
+}
+.nav-right { display: flex; align-items: center; gap: 44px; }
+.nav-link {
+  font-size: 10.5px; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--dust);
+  transition: color .3s; position: relative;
+}
+.nav-link::after {
+  content: ''; position: absolute; bottom: -3px; left: 0;
+  width: 0; height: 1px; background: var(--gold);
+  transition: width .3s;
+}
+.nav-link:hover { color: var(--white); }
+.nav-link:hover::after { width: 100%; }
+.nav-btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10.5px; letter-spacing: .3em;
+  text-transform: uppercase; font-weight: 400;
+  color: var(--ink); background: var(--gold);
+  border: none; padding: 12px 28px; cursor: none;
+  transition: background .3s, transform .2s;
+}
+.nav-btn:hover { background: var(--gold-bright); transform: translateY(-1px); }
 
-        /* Typography Elegance */
-        .outline-text {
-            color: transparent;
-            -webkit-text-stroke: 1px #D4AF37;
-        }
+/* ═══════════════════════════════════
+   HERO
+═══════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  position: relative; overflow: hidden;
+}
+.hero-left {
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 140px 60px 80px;
+  position: relative; z-index: 2;
+}
+.hero-right {
+  position: relative; overflow: hidden;
+}
+.hero-right-inner {
+  position: absolute; inset: 0;
+  background: var(--smoke);
+  display: flex; align-items: center; justify-content: center;
+}
 
-        /* Infinite Marquee */
-        .marquee-wrapper {
-            overflow: hidden;
-            white-space: nowrap;
-            display: flex;
-            width: 100%;
-        }
-        .marquee-content {
-            display: flex;
-            animation: marquee 20s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+/* Animated ink blob background */
+.ink-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orb-drift 12s ease-in-out infinite;
+}
+.orb1 { width: 400px; height: 400px; background: rgba(200,168,75,.07); top: 10%; left: -10%; animation-delay: 0s; }
+.orb2 { width: 300px; height: 300px; background: rgba(200,168,75,.04); bottom: 20%; right: -5%; animation-delay: -4s; }
+.orb3 { width: 200px; height: 200px; background: rgba(200,168,75,.06); top: 50%; left: 40%; animation-delay: -8s; }
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(20px,-15px) scale(1.05); }
+  66% { transform: translate(-10px,20px) scale(.95); }
+}
 
-        /* Swiper Customization */
-        .swiper-slide {
-            transition: all 0.5s ease;
-        }
-        .swiper-button-next, .swiper-button-prev {
-            color: #D4AF37 !important;
-        }
-        .swiper-pagination-bullet {
-            background: #ffffff !important;
-            opacity: 0.5;
-        }
-        .swiper-pagination-bullet-active {
-            background: #D4AF37 !important;
-            opacity: 1;
-        }
-    </style>
+/* Vertical index line */
+.v-line {
+  position: absolute; left: 60px; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(200,168,75,.35) 30%, rgba(200,168,75,.35) 70%, transparent);
+}
+
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 10px; letter-spacing: .5em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 36px;
+  opacity: 0; transform: translateY(20px);
+}
+.hero-eyebrow .e-line { width: 36px; height: 1px; background: var(--gold); }
+
+h1.headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(64px, 9vw, 140px);
+  line-height: .88;
+  font-weight: 300;
+  letter-spacing: -.02em;
+  opacity: 0; transform: translateY(40px);
+}
+h1.headline .stroke {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(200,168,75,.5);
+}
+h1.headline em {
+  font-style: italic; color: var(--gold);
+  font-weight: 300;
+}
+
+.hero-body {
+  margin-top: 44px;
+  max-width: 380px;
+  font-size: 13.5px; line-height: 1.85;
+  color: var(--dust);
+  opacity: 0; transform: translateY(20px);
+}
+.hero-body strong { color: var(--fog); font-weight: 400; }
+
+.hero-actions {
+  margin-top: 52px;
+  display: flex; gap: 28px; align-items: center;
+  opacity: 0; transform: translateY(20px);
+}
+.cta-primary {
+  display: inline-block;
+  padding: 17px 44px;
+  background: var(--gold); color: var(--ink);
+  font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; font-weight: 500;
+  transition: all .3s;
+}
+.cta-primary:hover { background: var(--gold-bright); transform: translateY(-2px); }
+.cta-ghost {
+  font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--dust);
+  border-bottom: 1px solid rgba(138,138,128,.4);
+  padding-bottom: 3px;
+  transition: color .3s, border-color .3s;
+}
+.cta-ghost:hover { color: var(--gold); border-color: var(--gold); }
+
+/* Big decorative right panel */
+.hero-panel-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(100px, 14vw, 200px);
+  line-height: 1; font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(200,168,75,.12);
+  writing-mode: vertical-rl;
+  user-select: none; letter-spacing: -.04em;
+  position: absolute;
+  right: 40px; top: 50%; transform: translateY(-50%);
+}
+/* Stats overlay on hero right */
+.hero-stats {
+  position: absolute; bottom: 60px; left: 50px; right: 50px;
+  display: flex; gap: 2px;
+}
+.hero-stat {
+  flex: 1; padding: 20px 24px;
+  background: rgba(14,14,12,.7);
+  border: 1px solid rgba(200,168,75,.1);
+  backdrop-filter: blur(10px);
+  opacity: 0; transform: translateY(20px);
+}
+.hero-stat .num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; font-weight: 600;
+  color: var(--gold); line-height: 1;
+}
+.hero-stat .label {
+  font-size: 9px; letter-spacing: .4em;
+  text-transform: uppercase; color: var(--dust);
+  margin-top: 6px;
+}
+
+.scroll-indicator {
+  position: absolute; bottom: 40px; left: 60px;
+  display: flex; flex-direction: column;
+  align-items: flex-start; gap: 10px;
+  font-size: 9px; letter-spacing: .4em;
+  text-transform: uppercase; color: var(--dust);
+  opacity: 0;
+}
+.scroll-bar {
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, var(--gold-dim), transparent);
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+@keyframes scroll-pulse {
+  0%,100% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(.4); opacity: .4; }
+}
+
+/* ═══════════════════════════════════
+   TICKER
+═══════════════════════════════════ */
+.ticker-wrap {
+  overflow: hidden; white-space: nowrap;
+  background: var(--gold);
+  border-top: 1px solid rgba(0,0,0,.1);
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  padding: 13px 0;
+}
+.ticker-track {
+  display: inline-flex;
+  animation: ticker-move 30s linear infinite;
+}
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 28px;
+  font-size: 9.5px; letter-spacing: .45em;
+  text-transform: uppercase; color: var(--ink);
+  font-weight: 400; padding: 0 28px;
+}
+.ticker-dot { width: 4px; height: 4px; background: rgba(0,0,0,.3); border-radius: 50%; }
+@keyframes ticker-move {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════
+   MANIFESTO / ABOUT
+═══════════════════════════════════ */
+#about {
+  padding: 160px 60px;
+  position: relative;
+  background: var(--ink2);
+}
+.about-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 200px 1fr;
+  gap: 80px; align-items: start;
+}
+.about-sidebar {
+  display: flex; flex-direction: column; gap: 60px;
+  padding-top: 8px;
+}
+.sidebar-label {
+  font-size: 9.5px; letter-spacing: .5em;
+  text-transform: uppercase; color: var(--gold);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.sidebar-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px; font-weight: 700;
+  color: rgba(200,168,75,.06); line-height: 1;
+  user-select: none;
+}
+.about-content {}
+.about-tag {
+  font-size: 9.5px; letter-spacing: .5em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 28px;
+  display: flex; align-items: center; gap: 14px;
+}
+.about-tag::before { content: ''; width: 36px; height: 1px; background: var(--gold); }
+
+.about-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 5.5vw, 80px);
+  line-height: 1.05; font-weight: 300;
+  color: var(--white); margin-bottom: 44px;
+}
+.about-heading em { font-style: italic; color: var(--gold); }
+.about-heading span { color: var(--dust); }
+
+.about-text {
+  font-size: 15px; line-height: 1.9;
+  color: var(--dust); max-width: 600px;
+  margin-bottom: 44px;
+}
+.about-text strong { color: var(--fog); font-weight: 400; }
+
+.about-divider {
+  width: 80px; height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent);
+  margin: 40px 0;
+}
+
+.about-pillars {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 2px; margin-top: 60px;
+}
+.pillar {
+  padding: 28px 24px;
+  border: 1px solid rgba(200,168,75,.1);
+  background: var(--smoke);
+  position: relative; overflow: hidden;
+  transition: border-color .3s;
+}
+.pillar::before {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; right: 0; height: 2px;
+  background: var(--gold); transform: scaleX(0);
+  transform-origin: left; transition: transform .4s;
+}
+.pillar:hover { border-color: rgba(200,168,75,.3); }
+.pillar:hover::before { transform: scaleX(1); }
+.pillar-icon {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px; color: rgba(200,168,75,.2);
+  line-height: 1; margin-bottom: 16px; font-weight: 700;
+}
+.pillar-name {
+  font-size: 13px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--fog);
+  font-weight: 400; margin-bottom: 8px;
+}
+.pillar-desc {
+  font-size: 12px; line-height: 1.7; color: var(--dust);
+}
+
+/* ═══════════════════════════════════
+   SERVICES — accordion layout
+═══════════════════════════════════ */
+#services {
+  background: var(--ink);
+  padding: 0;
+  position: relative;
+}
+.services-header {
+  padding: 100px 60px 60px;
+  max-width: 1280px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.sec-tag {
+  font-size: 9.5px; letter-spacing: .5em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.sec-tag::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
+.sec-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 60px);
+  font-weight: 300; color: var(--white); line-height: 1.1;
+}
+.sec-heading em { font-style: italic; color: var(--gold); }
+.sec-desc {
+  max-width: 340px; font-size: 13px; line-height: 1.8;
+  color: var(--dust); text-align: right;
+}
+
+/* Horizontal accordion services */
+.services-accordion {
+  display: flex; min-height: 520px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.svc-panel {
+  flex: 0 0 80px;
+  border-right: 1px solid rgba(255,255,255,.06);
+  overflow: hidden; position: relative;
+  transition: flex .6s cubic-bezier(.77,0,.175,1);
+  cursor: none;
+}
+.svc-panel:last-child { border-right: none; }
+.svc-panel.open { flex: 1; }
+.svc-panel:hover:not(.open) { flex: 0 0 100px; }
+
+.svc-num {
+  position: absolute; top: 40px; left: 24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; color: var(--gold-dim);
+  letter-spacing: .1em; z-index: 2;
+}
+.svc-title-vert {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%) rotate(-90deg);
+  white-space: nowrap;
+  font-size: 10px; letter-spacing: .45em;
+  text-transform: uppercase; color: var(--dust);
+  transition: opacity .3s; z-index: 2;
+}
+.svc-panel.open .svc-title-vert { opacity: 0; }
+
+.svc-content {
+  position: absolute; inset: 0;
+  padding: 60px 60px 60px 100px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  opacity: 0; transition: opacity .4s .2s;
+}
+.svc-panel.open .svc-content { opacity: 1; }
+
+.svc-bg {
+  position: absolute; inset: 0;
+  background: var(--smoke); z-index: 0;
+  overflow: hidden;
+}
+.svc-bg-text {
+  position: absolute; bottom: -20px; right: -20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 220px; font-weight: 700;
+  color: rgba(200,168,75,.04);
+  line-height: 1; user-select: none;
+  white-space: nowrap;
+}
+
+.svc-content { z-index: 1; }
+.svc-h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 3.5vw, 54px);
+  font-weight: 300; color: var(--white);
+  line-height: 1.1; margin-bottom: 20px;
+}
+.svc-h3 em { font-style: italic; color: var(--gold); }
+.svc-p {
+  font-size: 13.5px; line-height: 1.85;
+  color: var(--dust); max-width: 440px;
+  margin-bottom: 32px;
+}
+.svc-items {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 40px;
+}
+.svc-tag {
+  font-size: 9.5px; letter-spacing: .35em;
+  text-transform: uppercase; color: var(--gold);
+  border: 1px solid rgba(200,168,75,.25);
+  padding: 6px 14px;
+}
+.svc-link {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10.5px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--fog);
+  transition: color .3s;
+}
+.svc-link svg { transition: transform .3s; }
+.svc-link:hover { color: var(--gold); }
+.svc-link:hover svg { transform: translateX(4px); }
+
+/* ═══════════════════════════════════
+   PORTFOLIO — bento-style grid
+═══════════════════════════════════ */
+#portfolio {
+  background: var(--ink2);
+  padding: 120px 40px;
+  position: relative;
+}
+.port-header {
+  max-width: 1280px; margin: 0 auto 60px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.port-grid {
+  max-width: 1280px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 3px;
+}
+.port-item {
+  position: relative; overflow: hidden;
+  background: var(--ash); cursor: none;
+}
+.port-item .img-wrap {
+  width: 100%; height: 100%;
+  min-height: 260px;
+  overflow: hidden;
+}
+.port-item img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .7s cubic-bezier(.25,.46,.45,.94), filter .5s;
+  filter: saturate(.7) brightness(.85);
+}
+.port-item:hover img { transform: scale(1.06); filter: saturate(1) brightness(1); }
+.port-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 24px 28px 20px;
+  background: linear-gradient(to top, rgba(6,6,6,.95) 0%, transparent 100%);
+  transform: translateY(8px);
+  transition: transform .4s;
+}
+.port-item:hover .port-caption { transform: translateY(0); }
+.port-cat {
+  font-size: 9px; letter-spacing: .45em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 6px;
+}
+.port-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 400; color: var(--white);
+  line-height: 1.2;
+}
+
+/* Grid placement */
+.pi-1 { grid-column: 1/5; grid-row: 1; }
+.pi-2 { grid-column: 5/8; grid-row: 1; }
+.pi-3 { grid-column: 8/13; grid-row: 1/3; }
+.pi-4 { grid-column: 1/4; grid-row: 2; }
+.pi-5 { grid-column: 4/8; grid-row: 2; }
+.pi-6 { grid-column: 1/5; grid-row: 3; }
+.pi-7 { grid-column: 5/9; grid-row: 3; }
+.pi-8 { grid-column: 9/13; grid-row: 3; }
+.pi-3 .img-wrap { min-height: 524px; }
+
+/* ═══════════════════════════════════
+   PROCESS — horizontal timeline
+═══════════════════════════════════ */
+#process {
+  background: var(--ink);
+  padding: 140px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.process-inner { max-width: 1280px; margin: 0 auto; }
+.process-steps {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 2px; margin-top: 80px; position: relative;
+}
+.process-steps::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-dim) 20%, var(--gold-dim) 80%, transparent);
+}
+.step {
+  padding: 40px 32px;
+  border-right: 1px solid rgba(255,255,255,.05);
+  position: relative;
+}
+.step:last-child { border-right: none; }
+.step::before {
+  content: ''; position: absolute;
+  top: -1px; left: 0;
+  width: 0; height: 2px;
+  background: var(--gold);
+  transition: width .6s ease;
+}
+.step.in-view::before { width: 100%; }
+.step-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 64px; font-weight: 700;
+  color: rgba(200,168,75,.06); line-height: 1;
+  margin-bottom: 16px; user-select: none;
+}
+.step-name {
+  font-size: 12px; letter-spacing: .35em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 16px;
+}
+.step-desc {
+  font-size: 13px; line-height: 1.8;
+  color: var(--dust);
+}
+
+/* ═══════════════════════════════════
+   SOCIAL PROOF / REVIEWS
+   Real WhatsApp messages → editorial treatment
+═══════════════════════════════════ */
+#reviews {
+  background: var(--paper);
+  padding: 140px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.reviews-inner { max-width: 1280px; margin: 0 auto; }
+.reviews-tag { font-size: 9.5px; letter-spacing: .5em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+.reviews-tag::before { content: ''; width: 28px; height: 1px; background: var(--gold-dim); }
+.reviews-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px,5vw,72px);
+  font-weight: 300; color: var(--ink);
+  line-height: 1.05; margin-bottom: 80px;
+}
+.reviews-heading em { font-style: italic; color: var(--gold-dim); }
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.review-card {
+  background: var(--ink);
+  padding: 44px 36px;
+  border-top: 2px solid var(--gold);
+  position: relative;
+  transition: transform .3s;
+}
+.review-card:hover { transform: translateY(-4px); }
+.review-card.accent {
+  background: var(--gold);
+  border-top-color: var(--ink);
+}
+.review-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 80px; font-weight: 700;
+  line-height: .8; color: rgba(200,168,75,.15);
+  margin-bottom: -16px;
+}
+.review-card.accent .review-quote { color: rgba(0,0,0,.15); }
+.review-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-style: italic;
+  line-height: 1.6; color: var(--fog);
+  margin-bottom: 28px;
+}
+.review-card.accent .review-text { color: var(--ink); }
+.review-source {
+  font-size: 9.5px; letter-spacing: .4em;
+  text-transform: uppercase; color: var(--dust);
+}
+.review-card.accent .review-source { color: rgba(0,0,0,.5); }
+
+/* ═══════════════════════════════════
+   CTA SECTION
+═══════════════════════════════════ */
+#cta {
+  background: var(--ink);
+  padding: 180px 60px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-bg-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22vw; font-weight: 700;
+  color: rgba(200,168,75,.03);
+  white-space: nowrap; user-select: none;
+  line-height: 1; letter-spacing: -.05em;
+}
+.cta-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+.cta-eyebrow { font-size: 9.5px; letter-spacing: .5em; text-transform: uppercase; color: var(--gold); margin-bottom: 28px; }
+.cta-h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 6vw, 96px);
+  font-weight: 300; line-height: 1.05;
+  color: var(--white); margin-bottom: 52px;
+}
+.cta-h2 em { font-style: italic; color: var(--gold); }
+.cta-actions { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.cta-wa {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 18px 48px;
+  background: var(--gold); color: var(--ink);
+  font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; font-weight: 500;
+  transition: all .3s;
+}
+.cta-wa:hover { background: var(--gold-bright); transform: translateY(-2px); }
+.cta-email {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 18px 48px;
+  border: 1px solid rgba(200,168,75,.3);
+  color: var(--fog);
+  font-size: 11px; letter-spacing: .3em;
+  text-transform: uppercase; font-weight: 300;
+  transition: all .3s;
+}
+.cta-email:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ═══════════════════════════════════
+   FOOTER
+═══════════════════════════════════ */
+footer {
+  background: var(--ink2);
+  padding: 80px 60px 40px;
+  border-top: 1px solid rgba(200,168,75,.08);
+}
+.foot-grid {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px; margin-bottom: 60px;
+}
+.foot-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: .25em; color: var(--gold);
+  margin-bottom: 4px;
+}
+.foot-brand-sub {
+  font-size: 8.5px; letter-spacing: .5em;
+  text-transform: uppercase; color: var(--dust);
+  margin-bottom: 20px;
+}
+.foot-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; font-style: italic;
+  color: var(--dust); line-height: 1.5;
+  max-width: 260px;
+}
+.foot-col h5 {
+  font-size: 9.5px; letter-spacing: .45em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 20px;
+}
+.foot-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.foot-col li a, .foot-col li {
+  font-size: 13px; color: var(--dust);
+  transition: color .3s;
+  line-height: 1.5;
+}
+.foot-col li a:hover { color: var(--gold); }
+.foot-bottom {
+  max-width: 1280px; margin: 0 auto;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,.05);
+  display: flex; justify-content: space-between;
+  align-items: center;
+  font-size: 11px; color: var(--dust);
+  letter-spacing: .05em;
+}
+.foot-copy em { font-style: italic; color: rgba(200,168,75,.5); }
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media (max-width: 1024px) {
+  #hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .hero-left { padding: 140px 32px 80px; }
+  nav { padding: 0 32px; }
+  .nav-right .nav-link { display: none; }
+  #about { padding: 100px 32px; }
+  .about-inner { grid-template-columns: 1fr; gap: 40px; }
+  .about-sidebar { display: none; }
+  .services-header { padding: 80px 32px 40px; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .sec-desc { text-align: left; }
+  .services-accordion { flex-direction: column; }
+  .svc-panel { flex: 0 0 60px; }
+  .svc-panel.open { flex: 0 0 480px; }
+  .svc-title-vert { display: none; }
+  .svc-content { padding: 32px; }
+  #portfolio { padding: 80px 20px; }
+  .port-grid { grid-template-columns: 1fr 1fr; }
+  .pi-1,.pi-2,.pi-3,.pi-4,.pi-5,.pi-6,.pi-7,.pi-8 { grid-column: auto; grid-row: auto; }
+  .pi-3 .img-wrap { min-height: 260px; }
+  #process { padding: 100px 32px; }
+  .process-steps { grid-template-columns: 1fr 1fr; }
+  #reviews { padding: 100px 32px; }
+  .reviews-grid { grid-template-columns: 1fr; }
+  #cta { padding: 120px 32px; }
+  footer { padding: 60px 32px 40px; }
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+@media (max-width: 640px) {
+  h1.headline { font-size: 52px; }
+  .about-pillars { grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: 1fr; }
+  .port-grid { grid-template-columns: 1fr; }
+  .foot-grid { grid-template-columns: 1fr; }
+  .cta-actions { flex-direction: column; align-items: center; }
+}
+
+/* ═══════════════════════════════════
+   SCROLL REVEAL BASE
+═══════════════════════════════════ */
+.reveal { opacity: 0; transform: translateY(32px); }
+.reveal.visible { opacity: 1; transform: translateY(0); transition: opacity .8s ease, transform .8s ease; }
+.reveal-left { opacity: 0; transform: translateX(-32px); }
+.reveal-left.visible { opacity: 1; transform: translateX(0); transition: opacity .8s ease, transform .8s ease; }
+.delay-1 { transition-delay: .1s !important; }
+.delay-2 { transition-delay: .2s !important; }
+.delay-3 { transition-delay: .3s !important; }
+.delay-4 { transition-delay: .4s !important; }
+.delay-5 { transition-delay: .5s !important; }
+</style>
 </head>
-<body class="antialiased">
+<body>
 
-    <div class="noise-overlay"></div>
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-trail"></div>
 
-    <nav class="fixed w-full z-50 bg-shamaroBlack/80 backdrop-blur-md border-b border-white/10 px-6 md:px-12 py-5 flex justify-between items-center text-white transition-all duration-300">
-        <div class="flex flex-col leading-none">
-            <span class="text-xl md:text-2xl font-serif font-bold tracking-widest">SHAMARO</span>
-            <span class="text-[0.55rem] md:text-xs uppercase tracking-[0.3em] font-sans font-light mt-1 text-shamaroGold">Printing Enterprise</span>
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="logo-wrap">
+    <span class="logo-mark">SHAMARO</span>
+    <span class="logo-sub">Printing Enterprise</span>
+  </a>
+  <div class="nav-right">
+    <a href="#about" class="nav-link">About</a>
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#portfolio" class="nav-link">Portfolio</a>
+    <a href="#reviews" class="nav-link">Reviews</a>
+    <a href="https://wa.me/2347073495781" target="_blank" class="nav-btn">Get a Quote</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="ink-orb orb1"></div>
+  <div class="ink-orb orb2"></div>
+  <div class="ink-orb orb3"></div>
+  <div class="v-line"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow" id="he">
+      <span class="e-line"></span>
+      Ogbomoso, Nigeria · Est. 2022
+    </div>
+    <h1 class="headline" id="ht">
+      Print<br>
+      <em>Great</em><br>
+      <span class="stroke">ness.</span>
+    </h1>
+    <p class="hero-body" id="hb">
+      From <strong>concept to creation</strong> — we don't just print, we turn your greatest ideas into <strong>physical reality.</strong> Apparel, awards, jotters, banners and more.
+    </p>
+    <div class="hero-actions" id="ha">
+      <a href="https://wa.me/2347073495781" target="_blank" class="cta-primary">Start a Project</a>
+      <a href="#portfolio" class="cta-ghost">View Our Work</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-right-inner">
+      <div class="hero-panel-text">PRINT</div>
+      <div class="hero-stats">
+        <div class="hero-stat" id="hs1">
+          <div class="num">200+</div>
+          <div class="label">Projects Done</div>
         </div>
-        <button class="text-sm uppercase tracking-widest border-b border-white pb-1 hover:text-shamaroGold hover:border-shamaroGold transition">Menu</button>
-    </nav>
-
-    <section class="min-h-screen flex flex-col justify-center px-6 md:px-20 relative pt-20">
-        <div class="max-w-6xl mx-auto w-full z-10 border-l border-white/10 pl-6 md:pl-12 py-10">
-            <h1 class="text-5xl md:text-[8vw] leading-[1.1] font-serif font-bold uppercase tracking-tighter" id="hero-title">
-                Print <br> <span class="outline-text italic">Greatness.</span>
-            </h1>
-            <p class="mt-8 text-lg md:text-xl font-light max-w-xl text-gray-400" id="hero-subtitle">
-                From Concept to Creation—we print it all. Helping brands, organizations, and businesses bring their greatest ideas to the physical world.
-            </p>
+        <div class="hero-stat" id="hs2">
+          <div class="num">100%</div>
+          <div class="label">Client Satisfaction</div>
         </div>
-    </section>
-
-    <div class="bg-shamaroGold text-shamaroBlack py-4 border-y border-white/20">
-        <div class="marquee-wrapper">
-            <div class="marquee-content text-sm md:text-base font-bold uppercase tracking-[0.3em]">
-                <span class="mx-4">Concept to Creation</span> • 
-                <span class="mx-4">Print Greatness</span> • 
-                <span class="mx-4">Shamaro Printing Enterprise</span> • 
-                <span class="mx-4">Concept to Creation</span> • 
-                <span class="mx-4">Print Greatness</span> • 
-                <span class="mx-4">Shamaro Printing Enterprise</span> •
-                <span class="mx-4">Concept to Creation</span> • 
-                <span class="mx-4">Print Greatness</span> • 
-                <span class="mx-4">Shamaro Printing Enterprise</span> • 
-            </div>
+        <div class="hero-stat" id="hs3">
+          <div class="num">7+</div>
+          <div class="label">Product Categories</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator" id="si">
+    <div class="scroll-bar"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker">
+    <div class="ticker-item">Concept to Creation <span class="ticker-dot"></span></div>
+    <div class="ticker-item">White Merch & Hoodies <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Customized Jotters <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Wooden & Glass Awards <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Bottles & Mugs <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Tags, Banners & Posters <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Shamaro Printing Enterprise <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Ogbomoso, Nigeria <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Concept to Creation <span class="ticker-dot"></span></div>
+    <div class="ticker-item">White Merch & Hoodies <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Customized Jotters <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Wooden & Glass Awards <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Bottles & Mugs <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Tags, Banners & Posters <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Shamaro Printing Enterprise <span class="ticker-dot"></span></div>
+    <div class="ticker-item">Ogbomoso, Nigeria <span class="ticker-dot"></span></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-sidebar">
+      <div class="sidebar-label reveal">About</div>
+      <div class="sidebar-num reveal delay-2">01</div>
+    </div>
+    <div class="about-content">
+      <div class="about-tag reveal">Who We Are</div>
+      <h2 class="about-heading reveal delay-1">
+        We don't just print.<br>
+        We bring <em>visions</em><br>
+        <span>to life.</span>
+      </h2>
+      <p class="about-text reveal delay-2">
+        At <strong>Shamaro Printing Enterprise</strong>, we're passionate about helping brands, businesses, organizations, and individuals effectively communicate and make their greatest ideas tangible. Based in <strong>Ogbomoso, Nigeria</strong>, we serve clients across the country with precision-crafted print solutions.
+      </p>
+      <div class="about-divider reveal delay-2"></div>
+      <p class="about-text reveal delay-3">
+        Every hoodie, every award plaque, every induction jotter — handled with the same care and attention to detail. Because we understand that <strong>what you print represents who you are.</strong>
+      </p>
+      <div class="about-pillars">
+        <div class="pillar reveal delay-1">
+          <div class="pillar-icon">P</div>
+          <div class="pillar-name">Precision</div>
+          <div class="pillar-desc">Every detail matters. We don't cut corners on quality.</div>
+        </div>
+        <div class="pillar reveal delay-2">
+          <div class="pillar-icon">C</div>
+          <div class="pillar-name">Creativity</div>
+          <div class="pillar-desc">Your vision, elevated. We bring fresh eyes to every brief.</div>
+        </div>
+        <div class="pillar reveal delay-3">
+          <div class="pillar-icon">L</div>
+          <div class="pillar-name">Legacy</div>
+          <div class="pillar-desc">We create things that last — prints that tell your story for years.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <div>
+      <div class="sec-tag reveal">What We Do</div>
+      <h2 class="sec-heading reveal delay-1">Our <em>Services</em></h2>
+    </div>
+    <p class="sec-desc reveal">Everything from custom apparel to engraved awards — delivered with consistency and craft.</p>
+  </div>
+
+  <div class="services-accordion">
+
+    <!-- Panel 1 -->
+    <div class="svc-panel open" data-panel="1">
+      <div class="svc-bg">
+        <div class="svc-bg-text">MERCH</div>
+      </div>
+      <div class="svc-num">01</div>
+      <div class="svc-title-vert">Merchandize</div>
+      <div class="svc-content">
+        <h3 class="svc-h3">Custom<br><em>Merchandize</em></h3>
+        <p class="svc-p">Premium custom apparel that makes your brand, your team, or your milestone impossible to forget. From graduation tees to team jerseys — printed with precision.</p>
+        <div class="svc-items">
+          <span class="svc-tag">T-Shirts</span>
+          <span class="svc-tag">Hoodies</span>
+          <span class="svc-tag">Jerseys</span>
+          <span class="svc-tag">White Shirts</span>
+          <span class="svc-tag">Caps</span>
+        </div>
+        <a href="https://wa.me/2347073495781" target="_blank" class="svc-link">
+          Order Now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
     </div>
 
-    <section class="py-24 px-6 md:px-20 bg-shamaroDarkGray border-b border-white/10" id="services-section">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
-                <div>
-                    <h2 class="text-sm text-shamaroGold uppercase tracking-[0.4em] mb-4">The Arsenal</h2>
-                    <h3 class="text-4xl font-serif text-white">Our Services</h3>
-                </div>
-                <p class="text-gray-400 max-w-sm text-sm mt-4 md:mt-0 font-light">Precision-engineered print solutions tailored for corporate, academic, and personal milestones.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="border border-white/10 p-8 hover:border-shamaroGold transition duration-300 bg-shamaroBlack service-card">
-                    <div class="text-4xl font-serif text-white/20 mb-6">01</div>
-                    <h3 class="text-2xl font-serif text-white mb-4">Merchandize</h3>
-                    <p class="text-gray-400 font-light text-sm mb-6">Premium customized apparel. From classic white tees and hoodies to bespoke jerseys and caps.</p>
-                    <ul class="text-xs text-shamaroGold uppercase tracking-widest space-y-2">
-                        <li>• T-Shirts & Hoodies</li>
-                        <li>• Jerseys & Caps</li>
-                    </ul>
-                </div>
-                
-                <div class="border border-white/10 p-8 hover:border-shamaroGold transition duration-300 bg-shamaroBlack service-card">
-                    <div class="text-4xl font-serif text-white/20 mb-6">02</div>
-                    <h3 class="text-2xl font-serif text-white mb-4">Customized Jotters</h3>
-                    <p class="text-gray-400 font-light text-sm mb-6">High-end notebooks and journals tailored for inductions, convocations, and corporate identity.</p>
-                    <ul class="text-xs text-shamaroGold uppercase tracking-widest space-y-2">
-                        <li>• Convocation Jotters</li>
-                        <li>• Journals & Notebooks</li>
-                    </ul>
-                </div>
-
-                <div class="border border-white/10 p-8 hover:border-shamaroGold transition duration-300 bg-shamaroBlack service-card">
-                    <div class="text-4xl font-serif text-white/20 mb-6">03</div>
-                    <h3 class="text-2xl font-serif text-white mb-4">Brand Assets</h3>
-                    <p class="text-gray-400 font-light text-sm mb-6">Awards, banners, tags, and custom drinkware designed to honor excellence and preserve legacy.</p>
-                    <ul class="text-xs text-shamaroGold uppercase tracking-widest space-y-2">
-                        <li>• Wooden & Glass Awards</li>
-                        <li>• Bottles, Mugs & Banners</li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Panel 2 -->
+    <div class="svc-panel" data-panel="2">
+      <div class="svc-bg">
+        <div class="svc-bg-text">JOTTER</div>
+      </div>
+      <div class="svc-num">02</div>
+      <div class="svc-title-vert">Jotters</div>
+      <div class="svc-content">
+        <h3 class="svc-h3">Customized<br><em>Jotters</em></h3>
+        <p class="svc-p">Induction notebooks, convocation journals, and personal jotters — beautifully designed with your story on the cover. Perfect for celebrating milestones in style.</p>
+        <div class="svc-items">
+          <span class="svc-tag">Induction Jotters</span>
+          <span class="svc-tag">Convocation Journals</span>
+          <span class="svc-tag">Notebooks</span>
+          <span class="svc-tag">Personal Journals</span>
         </div>
-    </section>
-
-    <section class="py-24 bg-shamaroBlack border-b border-white/10" id="portfolio">
-        <div class="max-w-[90rem] mx-auto px-6 md:px-12">
-            <div class="text-center mb-16">
-                <h2 class="text-sm text-shamaroGold uppercase tracking-[0.4em] mb-4">Portfolio</h2>
-                <h3 class="text-4xl md:text-5xl font-serif text-white">Selected <span class="italic text-shamaroGold">Craft</span></h3>
-            </div>
-            
-            <div class="swiper portfolioSwiper w-full h-[50vh] md:h-[70vh]">
-                <div class="swiper-wrapper">
-                    
-                    <div class="swiper-slide relative bg-neutral-900 group">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="White Merch" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                        <div class="absolute bottom-10 left-6 md:left-12">
-                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Merchandize</span>
-                            <h4 class="text-3xl font-serif text-white">Custom Apparel</h4>
-                            <p class="text-gray-300 text-sm mt-2 max-w-md">Featuring "B TECH BAGGED", "Anatomy of Our Hearts", and bespoke White Shirts.</p>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide relative bg-neutral-900 group">
-                        <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Hoodies and Jerseys" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                        <div class="absolute bottom-10 left-6 md:left-12">
-                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Merchandize</span>
-                            <h4 class="text-3xl font-serif text-white">Hoodies, Jerseys & Caps</h4>
-                            <p class="text-gray-300 text-sm mt-2 max-w-md">Premium quality team wear and winter apparel built for durability and style.</p>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide relative bg-neutral-900 group">
-                        <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Customized Jotters" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                        <div class="absolute bottom-10 left-6 md:left-12">
-                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Customized Jotters</span>
-                            <h4 class="text-3xl font-serif text-white">Notebooks & Journals</h4>
-                            <p class="text-gray-300 text-sm mt-2 max-w-md">Including "Happy Convocation", "Mi Amor" collections, and professional induction jotters.</p>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide relative bg-neutral-900 group">
-                        <img src="https://images.unsplash.com/photo-1574768390772-20c297587843?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Awards and Plaques" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                        <div class="absolute bottom-10 left-6 md:left-12">
-                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Honors</span>
-                            <h4 class="text-3xl font-serif text-white">Awards & Plaques</h4>
-                            <p class="text-gray-300 text-sm mt-2 max-w-md">Elegant wood and glass pieces to recognize outstanding achievements.</p>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-32 px-6 md:px-20 bg-shamaroGold text-shamaroBlack text-center flex flex-col items-center justify-center">
-        <i class="fa-solid fa-hands-clapping text-4xl mb-8 opacity-80"></i>
-        <h2 class="text-2xl md:text-5xl font-serif font-bold max-w-5xl mx-auto leading-tight mb-10">
-            "You've reached the final page, but the real journey starts here. Let's talk, let's create, let's turn your concept into creation, let's print greatness."
-        </h2>
-        <a href="mailto:shamaroenterprise@gmail.com" class="border-b-2 border-shamaroBlack pb-2 text-lg md:text-xl font-bold uppercase tracking-widest hover:text-white hover:border-white transition-colors duration-300">
-            Start a Project
+        <a href="https://wa.me/2347073495781" target="_blank" class="svc-link">
+          Order Now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </a>
-    </section>
+      </div>
+    </div>
 
-    <footer class="bg-shamaroBlack pt-20 pb-10 px-6 md:px-20">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            <div>
-                <div class="flex flex-col leading-none mb-6">
-                    <span class="text-2xl font-serif font-bold text-shamaroGold tracking-widest">SHAMARO</span>
-                    <span class="text-[0.6rem] uppercase tracking-[0.3em] font-sans font-light mt-1 text-white">Printing Enterprise</span>
-                </div>
-                <p class="text-gray-500 font-light text-sm max-w-xs">We don't just print — we bring visions to life.</p>
-            </div>
-            <div>
-                <h4 class="text-white text-xs uppercase tracking-[0.2em] mb-6">Contact</h4>
-                <ul class="space-y-4 text-gray-400 font-light text-sm">
-                    <li><a href="mailto:shamaroenterprise@gmail.com" class="hover:text-shamaroGold transition">shamaroenterprise@gmail.com</a></li>
-                    <li><a href="tel:+2347073495781" class="hover:text-shamaroGold transition">+234 707 349 5781</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white text-xs uppercase tracking-[0.2em] mb-6">Social</h4>
-                <ul class="space-y-4 text-gray-400 font-light text-sm">
-                    <li><a href="#" class="hover:text-shamaroGold transition flex items-center gap-3"><i class="fa-brands fa-facebook"></i> shamaroprintingenterprise</a></li>
-                    <li><a href="#" class="hover:text-shamaroGold transition flex items-center gap-3"><i class="fa-brands fa-instagram"></i> shamaroprintingenterprise</a></li>
-                </ul>
-            </div>
+    <!-- Panel 3 -->
+    <div class="svc-panel" data-panel="3">
+      <div class="svc-bg">
+        <div class="svc-bg-text">AWARD</div>
+      </div>
+      <div class="svc-num">03</div>
+      <div class="svc-title-vert">Awards</div>
+      <div class="svc-content">
+        <h3 class="svc-h3">Awards &<br><em>Certificates</em></h3>
+        <p class="svc-p">Wooden plaques, glass trophies, name tags, and certificates — handcrafted to honour outstanding achievements with the elegance they deserve.</p>
+        <div class="svc-items">
+          <span class="svc-tag">Wooden Awards</span>
+          <span class="svc-tag">Glass Trophies</span>
+          <span class="svc-tag">Name Tags</span>
+          <span class="svc-tag">Certificates</span>
         </div>
-        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 uppercase tracking-widest pt-8 border-t border-white/10">
-            &copy; 2026 Shamaro Printing Enterprise. Crafted for Impact.
+        <a href="https://wa.me/2347073495781" target="_blank" class="svc-link">
+          Order Now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Panel 4 -->
+    <div class="svc-panel" data-panel="4">
+      <div class="svc-bg">
+        <div class="svc-bg-text">MUG</div>
+      </div>
+      <div class="svc-num">04</div>
+      <div class="svc-title-vert">Drinkware</div>
+      <div class="svc-content">
+        <h3 class="svc-h3">Bottles &<br><em>Mugs</em></h3>
+        <p class="svc-p">Personalized bottles and mugs that carry your identity in every sip. Ideal for giveaways, inductions, appreciation gifts, and corporate branding.</p>
+        <div class="svc-items">
+          <span class="svc-tag">Custom Bottles</span>
+          <span class="svc-tag">Mugs</span>
+          <span class="svc-tag">Tumbler Sets</span>
+          <span class="svc-tag">Branded Drinkware</span>
         </div>
-    </footer>
+        <a href="https://wa.me/2347073495781" target="_blank" class="svc-link">
+          Order Now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    <script>
-        // Initialize Swiper Carousel
-        var swiper = new Swiper(".portfolioSwiper", {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            autoplay: {
-                delay: 4000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            breakpoints: {
-                // Responsive settings
-                768: {
-                    slidesPerView: 1.5,
-                    centeredSlides: true,
-                    spaceBetween: 40,
-                },
-                1024: {
-                    slidesPerView: 2.2,
-                    centeredSlides: true,
-                    spaceBetween: 50,
-                },
-            },
-        });
+    <!-- Panel 5 -->
+    <div class="svc-panel" data-panel="5">
+      <div class="svc-bg">
+        <div class="svc-bg-text">BANNER</div>
+      </div>
+      <div class="svc-num">05</div>
+      <div class="svc-title-vert">Print Media</div>
+      <div class="svc-content">
+        <h3 class="svc-h3">Tags, Banners<br>& <em>Posters</em></h3>
+        <p class="svc-p">Event backdrops, conference banners, ID tags and promotional posters — everything you need to make your event or brand presence felt at scale.</p>
+        <div class="svc-items">
+          <span class="svc-tag">Banners</span>
+          <span class="svc-tag">Backdrops</span>
+          <span class="svc-tag">ID Tags</span>
+          <span class="svc-tag">Posters</span>
+          <span class="svc-tag">Flyers</span>
+        </div>
+        <a href="https://wa.me/2347073495781" target="_blank" class="svc-link">
+          Order Now
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
 
-        // GSAP Animations
-        gsap.registerPlugin(ScrollTrigger);
+  </div>
+</section>
 
-        // Hero Animation
-        gsap.from("#hero-title", {
-            y: 50,
-            opacity: 0,
-            duration: 1.2,
-            ease: "power3.out",
-            delay: 0.2
-        });
-        
-        gsap.from("#hero-subtitle", {
-            y: 30,
-            opacity: 0,
-            duration: 1.2,
-            ease: "power3.out",
-            delay: 0.4
-        });
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="port-header">
+    <div>
+      <div class="sec-tag reveal">Selected Work</div>
+      <h2 class="sec-heading reveal delay-1">Our <em>Craft</em></h2>
+    </div>
+    <a href="https://wa.me/2347073495781" target="_blank" class="cta-ghost reveal" style="color:var(--dust);">See More Work →</a>
+  </div>
+  <div class="port-grid">
 
-        // Staggered Service Cards
-        gsap.utils.toArray('.service-card').forEach((card, i) => {
-            gsap.from(card, {
-                scrollTrigger: {
-                    trigger: card,
-                    start: "top 85%",
-                },
-                y: 30,
-                opacity: 0,
-                duration: 0.8,
-                ease: "power2.out",
-                delay: i * 0.15 // Stagger effect
-            });
-        });
-    </script>
+    <div class="port-item pi-1 reveal">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=75&auto=format&fit=crop" alt="Custom T-shirts" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Merchandize</div>
+        <div class="port-name">B Tech Bagged — White Merch</div>
+      </div>
+    </div>
+
+    <div class="port-item pi-2 reveal delay-1">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=75&auto=format&fit=crop" alt="Hoodies" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Merchandize</div>
+        <div class="port-name">Hoodies & Jerseys</div>
+      </div>
+    </div>
+
+    <div class="port-item pi-3 reveal delay-2">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=700&q=75&auto=format&fit=crop" alt="Awards" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Awards & Certificates</div>
+        <div class="port-name">RCF LAUTECH Award of Honour — Wooden & Glass Plaques</div>
+      </div>
+    </div>
+
+    <div class="port-item pi-4 reveal delay-1">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&q=75&auto=format&fit=crop" alt="Jotters" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Customized Jotters</div>
+        <div class="port-name">Happy Convocation Mi Amor — Journal</div>
+      </div>
+    </div>
+
+    <div class="port-item pi-5 reveal delay-2">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=700&q=75&auto=format&fit=crop" alt="Bottles" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Bottles & Mugs</div>
+        <div class="port-name">Dr. Alaba — Induction Customized Bottles</div>
+      </div>
+    </div>
+
+    <div class="port-item pi-6 reveal">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=700&q=75&auto=format&fit=crop" alt="Banners" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Banners & Backdrops</div>
+        <div class="port-name">Hult Prize LAUTECH — Event Backdrop</div>
+      </div>
+    </div>
+
+    <div class="port-item pi-7 reveal delay-1">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=700&q=75&auto=format&fit=crop" alt="Tags" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Tags & Print Media</div>
+        <div class="port-name">UNLIMITED Conference — Volunteer ID Tags</div>
+      </div>
+    </div>
+
+    <div class="port-item pi-8 reveal delay-2">
+      <div class="img-wrap">
+        <img src="https://images.unsplash.com/photo-1612832021455-245704c6755a?w=700&q=75&auto=format&fit=crop" alt="Induction Jotters" loading="lazy">
+      </div>
+      <div class="port-caption">
+        <div class="port-cat">Customized Jotters</div>
+        <div class="port-name">Induction Jotters — Dr. Okon & Dr. Ayebona</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="process-inner">
+    <div class="sec-tag reveal">How It Works</div>
+    <h2 class="sec-heading reveal delay-1">From <em>Idea</em> to <em>Reality</em></h2>
+    <div class="process-steps">
+      <div class="step reveal delay-1">
+        <div class="step-num">01</div>
+        <div class="step-name">Reach Out</div>
+        <div class="step-desc">Send us a message on WhatsApp or email with your idea, quantity, and deadline. We respond fast.</div>
+      </div>
+      <div class="step reveal delay-2">
+        <div class="step-num">02</div>
+        <div class="step-name">Design Brief</div>
+        <div class="step-desc">We review your brief, suggest the best format, and send you a design mockup for approval before production begins.</div>
+      </div>
+      <div class="step reveal delay-3">
+        <div class="step-num">03</div>
+        <div class="step-name">Production</div>
+        <div class="step-desc">Once approved, your order goes into production. We handle every step with quality checks along the way.</div>
+      </div>
+      <div class="step reveal delay-4">
+        <div class="step-num">04</div>
+        <div class="step-name">Delivery</div>
+        <div class="step-desc">Your finished product is delivered — ready to represent your brand, celebrate your milestone, or honour your people.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reviews-inner">
+    <div class="reviews-tag reveal">Client Love</div>
+    <h2 class="reviews-heading reveal delay-1">
+      What our clients<br><em>actually say.</em>
+    </h2>
+    <div class="reviews-grid">
+      <div class="review-card reveal delay-1">
+        <div class="review-quote">"</div>
+        <p class="review-text">It's soooo beautiful. The pens and the card came out perfectly. I really love it.</p>
+        <div class="review-source">Verified Client · WhatsApp</div>
+      </div>
+      <div class="review-card accent reveal delay-2">
+        <div class="review-quote">"</div>
+        <p class="review-text">You did an amazing job with the certificates. I am sure the brand will do well.</p>
+        <div class="review-source">Verified Client · WhatsApp</div>
+      </div>
+      <div class="review-card reveal delay-3">
+        <div class="review-quote">"</div>
+        <p class="review-text">I loved the shirt, thank you. I'll also refer you — I love the fact that it came out well.</p>
+        <div class="review-source">Verified Client · WhatsApp</div>
+      </div>
+      <div class="review-card reveal delay-2">
+        <div class="review-quote">"</div>
+        <p class="review-text">Thank you so much. It's really clear. I think we will definitely work together again.</p>
+        <div class="review-source">Verified Client · WhatsApp</div>
+      </div>
+      <div class="review-card reveal delay-3">
+        <div class="review-quote">"</div>
+        <p class="review-text">Your customer service is nice. More wins in Jesus' name. I'll keep referring you.</p>
+        <div class="review-source">Verified Client · WhatsApp</div>
+      </div>
+      <div class="review-card reveal delay-4">
+        <div class="review-quote">"</div>
+        <p class="review-text">Yea definitely — your customer service is exceptional. The quality speaks for itself.</p>
+        <div class="review-source">Verified Client · WhatsApp</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg-text">PRINT</div>
+  <div class="cta-inner">
+    <div class="cta-eyebrow reveal">Ready to Create?</div>
+    <h2 class="cta-h2 reveal delay-1">
+      Let's turn your<br><em>concept</em> into<br>creation.
+    </h2>
+    <div class="cta-actions reveal delay-2">
+      <a href="https://wa.me/2347073495781" target="_blank" class="cta-wa">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M11.999 2C6.478 2 2 6.478 2 12c0 1.85.504 3.58 1.38 5.063L2 22l5.084-1.329A9.955 9.955 0 0012 22c5.522 0 10-4.478 10-10S17.522 2 12 2z"/>
+        </svg>
+        WhatsApp Us
+      </a>
+      <a href="mailto:shamaroenterprise@gmail.com" class="cta-email">
+        shamaroenterprise@gmail.com
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand-name">SHAMARO</div>
+      <div class="foot-brand-sub">Printing Enterprise</div>
+      <p class="foot-tagline">"We don't just print — we bring visions to life."</p>
+    </div>
+    <div class="foot-col">
+      <h5>Services</h5>
+      <ul>
+        <li><a href="#services">Merchandize</a></li>
+        <li><a href="#services">Customized Jotters</a></li>
+        <li><a href="#services">Awards & Certs</a></li>
+        <li><a href="#services">Bottles & Mugs</a></li>
+        <li><a href="#services">Banners & Tags</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="https://wa.me/2347073495781">+234 707 349 5781</a></li>
+        <li><a href="mailto:shamaroenterprise@gmail.com">shamaroenterprise@gmail.com</a></li>
+        <li>Ogbomoso, Nigeria</li>
+        <li>GMT +1:00</li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Social</h5>
+      <ul>
+        <li><a href="https://instagram.com/shamaroprintingenterprise" target="_blank">Instagram</a></li>
+        <li><a href="https://facebook.com/shamaroprintingenterprise" target="_blank">Facebook</a></li>
+        <li><a href="https://wa.me/2347073495781" target="_blank">WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span class="foot-copy">&copy; 2026 Shamaro Printing Enterprise. <em>Crafted for Impact.</em></span>
+    <span>Concept to Creation.</span>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const trail = document.getElementById('cur-trail');
+let mx = 0, my = 0, tx = 0, ty = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  tx += (mx - tx) * 0.18;
+  ty += (my - ty) * 0.18;
+  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+  trail.style.left = tx + 'px'; trail.style.top = ty + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a, button, .svc-panel, .port-item, .pillar').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+});
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── HERO ANIMATIONS ──
+window.addEventListener('load', () => {
+  const tl = (el, delay, y = 20) => {
+    const e = document.getElementById(el);
+    if (!e) return;
+    e.style.transition = `opacity .9s ease ${delay}s, transform .9s ease ${delay}s`;
+    e.style.opacity = 1; e.style.transform = 'none';
+  };
+  setTimeout(() => { tl('he', 0.1); tl('ht', 0.3, 40); tl('hb', 0.6); tl('ha', 0.8); tl('si', 1.0); }, 100);
+  setTimeout(() => {
+    ['hs1','hs2','hs3'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) { el.style.transition = `opacity .7s ease ${0.9 + i*0.15}s, transform .7s ease ${0.9+i*0.15}s`; el.style.opacity = 1; el.style.transform = 'none'; }
+    });
+  }, 100);
+});
+
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal, .reveal-left');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => observer.observe(el));
+
+// ── PROCESS LINE ANIMATION ──
+const stepObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.4 });
+document.querySelectorAll('.step').forEach(s => stepObs.observe(s));
+
+// ── SERVICES ACCORDION ──
+document.querySelectorAll('.svc-panel').forEach(panel => {
+  panel.addEventListener('click', () => {
+    document.querySelectorAll('.svc-panel').forEach(p => p.classList.remove('open'));
+    panel.classList.add('open');
+  });
+});
+</script>
 </body>
 </html>
