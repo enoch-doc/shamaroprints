@@ -1,169 +1,337 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Shamaro Printing Enterprise</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shamaro Printing Enterprise | Concept to Creation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-  <!-- Tailwind CDN with custom config -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            shamaroGold: '#D4AF37',
-            shamaroYellow: '#FFD700',
-            shamaroBlack: '#111111'
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'serif'],
-            sans: ['Inter', 'system-ui', 'sans-serif']
-          }
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        shamaroGold: '#D4AF37',
+                        shamaroBlack: '#0a0a0a',
+                        shamaroDarkGray: '#151515',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
 
-  <!-- Optional: Google Fonts preload -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+        /* Subtle Noise Overlay for Texture */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png');
+        }
 
-  <style>
-    /* Small visual polish */
-    :root { color-scheme: light; }
-    .container-max { max-width: 1100px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
-  </style>
+        /* Typography Elegance */
+        .outline-text {
+            color: transparent;
+            -webkit-text-stroke: 1px #D4AF37;
+        }
+
+        /* Infinite Marquee */
+        .marquee-wrapper {
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            width: 100%;
+        }
+        .marquee-content {
+            display: flex;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Swiper Customization */
+        .swiper-slide {
+            transition: all 0.5s ease;
+        }
+        .swiper-button-next, .swiper-button-prev {
+            color: #D4AF37 !important;
+        }
+        .swiper-pagination-bullet {
+            background: #ffffff !important;
+            opacity: 0.5;
+        }
+        .swiper-pagination-bullet-active {
+            background: #D4AF37 !important;
+            opacity: 1;
+        }
+    </style>
 </head>
-<body class="antialiased bg-white text-shamaroBlack font-sans">
+<body class="antialiased">
 
-  <!-- NAVBAR -->
-  <header class="border-b border-gray-100">
-    <div class="container-max flex items-center justify-between py-4">
-      <a href="#" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-md bg-shamaroGold flex items-center justify-center shadow">
-          <span class="text-white font-bold">S</span>
+    <div class="noise-overlay"></div>
+
+    <nav class="fixed w-full z-50 bg-shamaroBlack/80 backdrop-blur-md border-b border-white/10 px-6 md:px-12 py-5 flex justify-between items-center text-white transition-all duration-300">
+        <div class="flex flex-col leading-none">
+            <span class="text-xl md:text-2xl font-serif font-bold tracking-widest">SHAMARO</span>
+            <span class="text-[0.55rem] md:text-xs uppercase tracking-[0.3em] font-sans font-light mt-1 text-shamaroGold">Printing Enterprise</span>
         </div>
-        <div>
-          <span class="block text-lg font-semibold">Shamaro</span>
-          <span class="block text-xs text-gray-500 -mt-0.5">Printing Enterprise</span>
+        <button class="text-sm uppercase tracking-widest border-b border-white pb-1 hover:text-shamaroGold hover:border-shamaroGold transition">Menu</button>
+    </nav>
+
+    <section class="min-h-screen flex flex-col justify-center px-6 md:px-20 relative pt-20">
+        <div class="max-w-6xl mx-auto w-full z-10 border-l border-white/10 pl-6 md:pl-12 py-10">
+            <h1 class="text-5xl md:text-[8vw] leading-[1.1] font-serif font-bold uppercase tracking-tighter" id="hero-title">
+                Print <br> <span class="outline-text italic">Greatness.</span>
+            </h1>
+            <p class="mt-8 text-lg md:text-xl font-light max-w-xl text-gray-400" id="hero-subtitle">
+                From Concept to Creation—we print it all. Helping brands, organizations, and businesses bring their greatest ideas to the physical world.
+            </p>
         </div>
-      </a>
+    </section>
 
-      <nav class="hidden md:flex items-center gap-6 text-sm">
-        <a href="#" class="text-gray-700 hover:text-shamaroGold">Services</a>
-        <a href="#" class="text-gray-700 hover:text-shamaroGold">Pricing</a>
-        <a href="#" class="text-gray-700 hover:text-shamaroGold">Portfolio</a>
-        <a href="#" class="text-gray-700 hover:text-shamaroGold">Contact</a>
-      </nav>
-
-      <div class="hidden md:flex items-center gap-3">
-        <a href="#" class="px-4 py-2 rounded-md bg-shamaroGold text-white text-sm font-medium shadow hover:brightness-95">Get a Quote</a>
-      </div>
-
-      <!-- Mobile menu button -->
-      <button id="menuBtn" aria-expanded="false" aria-controls="mobileMenu" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
-        <svg id="menuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-        </svg>
-        <svg id="menuClose" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+    <div class="bg-shamaroGold text-shamaroBlack py-4 border-y border-white/20">
+        <div class="marquee-wrapper">
+            <div class="marquee-content text-sm md:text-base font-bold uppercase tracking-[0.3em]">
+                <span class="mx-4">Concept to Creation</span> • 
+                <span class="mx-4">Print Greatness</span> • 
+                <span class="mx-4">Shamaro Printing Enterprise</span> • 
+                <span class="mx-4">Concept to Creation</span> • 
+                <span class="mx-4">Print Greatness</span> • 
+                <span class="mx-4">Shamaro Printing Enterprise</span> •
+                <span class="mx-4">Concept to Creation</span> • 
+                <span class="mx-4">Print Greatness</span> • 
+                <span class="mx-4">Shamaro Printing Enterprise</span> • 
+            </div>
+        </div>
     </div>
 
-    <!-- Mobile menu -->
-    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-100">
-      <div class="px-4 py-4 space-y-3">
-        <a href="#" class="block text-gray-700">Services</a>
-        <a href="#" class="block text-gray-700">Pricing</a>
-        <a href="#" class="block text-gray-700">Portfolio</a>
-        <a href="#" class="block text-gray-700">Contact</a>
-        <a href="#" class="block mt-2 px-4 py-2 rounded-md bg-shamaroGold text-white text-center">Get a Quote</a>
-      </div>
-    </div>
-  </header>
+    <section class="py-24 px-6 md:px-20 bg-shamaroDarkGray border-b border-white/10" id="services-section">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-white/10 pb-8">
+                <div>
+                    <h2 class="text-sm text-shamaroGold uppercase tracking-[0.4em] mb-4">The Arsenal</h2>
+                    <h3 class="text-4xl font-serif text-white">Our Services</h3>
+                </div>
+                <p class="text-gray-400 max-w-sm text-sm mt-4 md:mt-0 font-light">Precision-engineered print solutions tailored for corporate, academic, and personal milestones.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="border border-white/10 p-8 hover:border-shamaroGold transition duration-300 bg-shamaroBlack service-card">
+                    <div class="text-4xl font-serif text-white/20 mb-6">01</div>
+                    <h3 class="text-2xl font-serif text-white mb-4">Merchandize</h3>
+                    <p class="text-gray-400 font-light text-sm mb-6">Premium customized apparel. From classic white tees and hoodies to bespoke jerseys and caps.</p>
+                    <ul class="text-xs text-shamaroGold uppercase tracking-widest space-y-2">
+                        <li>• T-Shirts & Hoodies</li>
+                        <li>• Jerseys & Caps</li>
+                    </ul>
+                </div>
+                
+                <div class="border border-white/10 p-8 hover:border-shamaroGold transition duration-300 bg-shamaroBlack service-card">
+                    <div class="text-4xl font-serif text-white/20 mb-6">02</div>
+                    <h3 class="text-2xl font-serif text-white mb-4">Customized Jotters</h3>
+                    <p class="text-gray-400 font-light text-sm mb-6">High-end notebooks and journals tailored for inductions, convocations, and corporate identity.</p>
+                    <ul class="text-xs text-shamaroGold uppercase tracking-widest space-y-2">
+                        <li>• Convocation Jotters</li>
+                        <li>• Journals & Notebooks</li>
+                    </ul>
+                </div>
 
-  <!-- HERO -->
-  <main class="min-h-[70vh] flex items-center">
-    <div class="container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-16">
-      <section>
-        <p class="inline-flex items-center gap-2 text-sm text-shamaroGold font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path d="M2 11a1 1 0 011-1h3V7a1 1 0 112 0v3h3a1 1 0 110 2H8v3a1 1 0 11-2 0v-3H3a1 1 0 01-1-1z"/>
-          </svg>
-          Fast Turnaround
-        </p>
-
-        <h1 class="mt-6 text-4xl md:text-5xl font-serif font-bold leading-tight text-shamaroBlack">
-          Premium Print Solutions for Businesses and Creatives
-        </h1>
-
-        <p class="mt-4 text-gray-600 max-w-xl">
-          High-quality offset and digital printing, custom packaging, and branded collateral delivered on time. Local service with global standards.
-        </p>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="#" class="inline-flex items-center gap-3 px-6 py-3 rounded-md bg-shamaroGold text-white font-medium shadow hover:brightness-95">
-            Get a Quote
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-
-          <a href="#" class="inline-flex items-center gap-3 px-6 py-3 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50">
-            View Portfolio
-          </a>
+                <div class="border border-white/10 p-8 hover:border-shamaroGold transition duration-300 bg-shamaroBlack service-card">
+                    <div class="text-4xl font-serif text-white/20 mb-6">03</div>
+                    <h3 class="text-2xl font-serif text-white mb-4">Brand Assets</h3>
+                    <p class="text-gray-400 font-light text-sm mb-6">Awards, banners, tags, and custom drinkware designed to honor excellence and preserve legacy.</p>
+                    <ul class="text-xs text-shamaroGold uppercase tracking-widest space-y-2">
+                        <li>• Wooden & Glass Awards</li>
+                        <li>• Bottles, Mugs & Banners</li>
+                    </ul>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <ul class="mt-8 flex flex-wrap gap-6 text-sm text-gray-600">
-          <li><strong class="text-shamaroBlack">1000+</strong> orders fulfilled</li>
-          <li><strong class="text-shamaroBlack">Same-day proofs</strong></li>
-          <li><strong class="text-shamaroBlack">Nationwide delivery</strong></li>
-        </ul>
-      </section>
+    <section class="py-24 bg-shamaroBlack border-b border-white/10" id="portfolio">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-sm text-shamaroGold uppercase tracking-[0.4em] mb-4">Portfolio</h2>
+                <h3 class="text-4xl md:text-5xl font-serif text-white">Selected <span class="italic text-shamaroGold">Craft</span></h3>
+            </div>
+            
+            <div class="swiper portfolioSwiper w-full h-[50vh] md:h-[70vh]">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide relative bg-neutral-900 group">
+                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="White Merch" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-10 left-6 md:left-12">
+                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Merchandize</span>
+                            <h4 class="text-3xl font-serif text-white">Custom Apparel</h4>
+                            <p class="text-gray-300 text-sm mt-2 max-w-md">Featuring "B TECH BAGGED", "Anatomy of Our Hearts", and bespoke White Shirts.</p>
+                        </div>
+                    </div>
 
-      <aside class="flex items-center justify-center">
-        <div class="w-full max-w-md rounded-xl overflow-hidden shadow-lg">
-          <img src="https://images.unsplash.com/photo-1581091012184-7b3b1f6b6b2b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="Printing press and samples" class="w-full h-72 object-cover">
+                    <div class="swiper-slide relative bg-neutral-900 group">
+                        <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Hoodies and Jerseys" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-10 left-6 md:left-12">
+                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Merchandize</span>
+                            <h4 class="text-3xl font-serif text-white">Hoodies, Jerseys & Caps</h4>
+                            <p class="text-gray-300 text-sm mt-2 max-w-md">Premium quality team wear and winter apparel built for durability and style.</p>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide relative bg-neutral-900 group">
+                        <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Customized Jotters" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-10 left-6 md:left-12">
+                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Customized Jotters</span>
+                            <h4 class="text-3xl font-serif text-white">Notebooks & Journals</h4>
+                            <p class="text-gray-300 text-sm mt-2 max-w-md">Including "Happy Convocation", "Mi Amor" collections, and professional induction jotters.</p>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide relative bg-neutral-900 group">
+                        <img src="https://images.unsplash.com/photo-1574768390772-20c297587843?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Awards and Plaques" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-10 left-6 md:left-12">
+                            <span class="text-shamaroGold text-xs font-sans tracking-[0.2em] uppercase mb-2 block">Honors</span>
+                            <h4 class="text-3xl font-serif text-white">Awards & Plaques</h4>
+                            <p class="text-gray-300 text-sm mt-2 max-w-md">Elegant wood and glass pieces to recognize outstanding achievements.</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
         </div>
-      </aside>
-    </div>
-  </main>
+    </section>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-gray-100">
-    <div class="container-max py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="text-sm text-gray-600">
-        © <span id="year"></span> Shamaro Printing Enterprise. All rights reserved.
-      </div>
-      <div class="flex items-center gap-4 text-sm">
-        <a href="#" class="text-gray-600 hover:text-shamaroGold">Privacy</a>
-        <a href="#" class="text-gray-600 hover:text-shamaroGold">Terms</a>
-        <a href="#" class="text-gray-600 hover:text-shamaroGold">Contact</a>
-      </div>
-    </div>
-  </footer>
+    <section class="py-32 px-6 md:px-20 bg-shamaroGold text-shamaroBlack text-center flex flex-col items-center justify-center">
+        <i class="fa-solid fa-hands-clapping text-4xl mb-8 opacity-80"></i>
+        <h2 class="text-2xl md:text-5xl font-serif font-bold max-w-5xl mx-auto leading-tight mb-10">
+            "You've reached the final page, but the real journey starts here. Let's talk, let's create, let's turn your concept into creation, let's print greatness."
+        </h2>
+        <a href="mailto:shamaroenterprise@gmail.com" class="border-b-2 border-shamaroBlack pb-2 text-lg md:text-xl font-bold uppercase tracking-widest hover:text-white hover:border-white transition-colors duration-300">
+            Start a Project
+        </a>
+    </section>
 
-  <!-- Minimal JS -->
-  <script>
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const menuOpen = document.getElementById('menuOpen');
-    const menuClose = document.getElementById('menuClose');
+    <footer class="bg-shamaroBlack pt-20 pb-10 px-6 md:px-20">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+            <div>
+                <div class="flex flex-col leading-none mb-6">
+                    <span class="text-2xl font-serif font-bold text-shamaroGold tracking-widest">SHAMARO</span>
+                    <span class="text-[0.6rem] uppercase tracking-[0.3em] font-sans font-light mt-1 text-white">Printing Enterprise</span>
+                </div>
+                <p class="text-gray-500 font-light text-sm max-w-xs">We don't just print — we bring visions to life.</p>
+            </div>
+            <div>
+                <h4 class="text-white text-xs uppercase tracking-[0.2em] mb-6">Contact</h4>
+                <ul class="space-y-4 text-gray-400 font-light text-sm">
+                    <li><a href="mailto:shamaroenterprise@gmail.com" class="hover:text-shamaroGold transition">shamaroenterprise@gmail.com</a></li>
+                    <li><a href="tel:+2347073495781" class="hover:text-shamaroGold transition">+234 707 349 5781</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white text-xs uppercase tracking-[0.2em] mb-6">Social</h4>
+                <ul class="space-y-4 text-gray-400 font-light text-sm">
+                    <li><a href="#" class="hover:text-shamaroGold transition flex items-center gap-3"><i class="fa-brands fa-facebook"></i> shamaroprintingenterprise</a></li>
+                    <li><a href="#" class="hover:text-shamaroGold transition flex items-center gap-3"><i class="fa-brands fa-instagram"></i> shamaroprintingenterprise</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto text-center text-xs text-gray-600 uppercase tracking-widest pt-8 border-t border-white/10">
+            &copy; 2026 Shamaro Printing Enterprise. Crafted for Impact.
+        </div>
+    </footer>
 
-    menuBtn?.addEventListener('click', () => {
-      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
-      menuBtn.setAttribute('aria-expanded', String(!expanded));
-      mobileMenu.classList.toggle('hidden');
-      menuOpen.classList.toggle('hidden');
-      menuClose.classList.toggle('hidden');
-    });
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script>
+        // Initialize Swiper Carousel
+        var swiper = new Swiper(".portfolioSwiper", {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                // Responsive settings
+                768: {
+                    slidesPerView: 1.5,
+                    centeredSlides: true,
+                    spaceBetween: 40,
+                },
+                1024: {
+                    slidesPerView: 2.2,
+                    centeredSlides: true,
+                    spaceBetween: 50,
+                },
+            },
+        });
 
-    // Footer year
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Animation
+        gsap.from("#hero-title", {
+            y: 50,
+            opacity: 0,
+            duration: 1.2,
+            ease: "power3.out",
+            delay: 0.2
+        });
+        
+        gsap.from("#hero-subtitle", {
+            y: 30,
+            opacity: 0,
+            duration: 1.2,
+            ease: "power3.out",
+            delay: 0.4
+        });
+
+        // Staggered Service Cards
+        gsap.utils.toArray('.service-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                },
+                y: 30,
+                opacity: 0,
+                duration: 0.8,
+                ease: "power2.out",
+                delay: i * 0.15 // Stagger effect
+            });
+        });
+    </script>
 </body>
 </html>
