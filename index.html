@@ -34,9 +34,9 @@ body {
   font-family: 'Outfit', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
-  cursor: none;
+  
 }
-a { text-decoration: none; color: inherit; cursor: none; }
+a { text-decoration: none; color: inherit; cursor: pointer; }
 img { display: block; max-width: 100%; }
 
 /* ═══════════════════════════════════
@@ -104,7 +104,7 @@ nav.scrolled {
   font-size: 10.5px; letter-spacing: .3em;
   text-transform: uppercase; font-weight: 400;
   color: var(--ink); background: var(--gold);
-  border: none; padding: 12px 28px; cursor: none;
+  border: none; padding: 12px 28px; cursor: pointer;
   transition: background .3s, transform .2s;
 }
 .nav-btn:hover { background: var(--gold-bright); transform: translateY(-1px); }
@@ -426,7 +426,7 @@ h1.headline em {
   border-right: 1px solid rgba(255,255,255,.06);
   overflow: hidden; position: relative;
   transition: flex .6s cubic-bezier(.77,0,.175,1);
-  cursor: none;
+  cursor: pointer;
 }
 .svc-panel:last-child { border-right: none; }
 .svc-panel.open { flex: 1; }
@@ -524,7 +524,7 @@ h1.headline em {
 }
 .port-item {
   position: relative; overflow: hidden;
-  background: var(--ash); cursor: none;
+  background: var(--ash); cursor: pointer;
 }
 .port-item .img-wrap {
   width: 100%; height: 100%;
@@ -1342,23 +1342,7 @@ footer {
 </footer>
 
 <script>
-// ── CURSOR ──
-const cur = document.getElementById('cur');
-const trail = document.getElementById('cur-trail');
-let mx = 0, my = 0, tx = 0, ty = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animCursor() {
-  tx += (mx - tx) * 0.18;
-  ty += (my - ty) * 0.18;
-  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
-  trail.style.left = tx + 'px'; trail.style.top = ty + 'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('a, button, .svc-panel, .port-item, .pillar').forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-  el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
-});
+
 
 // ── NAV SCROLL ──
 window.addEventListener('scroll', () => {
