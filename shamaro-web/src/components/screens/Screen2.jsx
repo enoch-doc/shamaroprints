@@ -12,35 +12,221 @@ const TICKER_ITEMS = [
 function Ticker() {
   const all = [...TICKER_ITEMS, ...TICKER_ITEMS]
   return (
-    <div className="flex whitespace-nowrap animate-[ticker_30s_linear_infinite]">
+    <div className="flex whitespace-nowrap
+                    animate-[ticker_30s_linear_infinite]">
       {all.map((item, i) => (
         <span key={i}
               className="inline-flex items-center gap-5
                          font-body font-medium text-[9px]
                          tracking-[0.45em] uppercase text-ink px-5">
           {item}
-          <span className="w-1 h-1 bg-ink/20 rounded-full flex-shrink-0" />
+          <span className="w-1 h-1 bg-ink/20 rounded-full
+                           flex-shrink-0" />
         </span>
       ))}
     </div>
   )
 }
 
+/* ── Gold filter style — makes black PNG/SVG visible on dark bg ── */
+const GOLD_FILTER =
+  'brightness(0) sepia(1) saturate(10) hue-rotate(5deg) ' +
+  'drop-shadow(0 0 6px rgba(253,191,0,1)) ' +
+  'drop-shadow(0 0 16px rgba(253,191,0,0.85)) ' +
+  'drop-shadow(0 0 32px rgba(253,191,0,0.5))'
+
+/* ── Crown SVG — matches brand mark proportions ── */
+function CrownSVG({ style = {}, className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 80 54"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={style}
+    >
+      <circle cx="40" cy="5"  r="5" fill="#fdbf00" />
+      <circle cx="14" cy="14" r="4" fill="#fdbf00" />
+      <circle cx="66" cy="14" r="4" fill="#fdbf00" />
+      <path
+        d="M6 50 L14 14 L28 34 L40 5 L52 34 L66 14 L74 50 Z"
+        fill="#fdbf00"
+        opacity="0.95"
+      />
+      <rect x="6" y="46" width="68" height="7" rx="2" fill="#e8a921" />
+    </svg>
+  )
+}
+
+/* ── Heart SVG — same bounding box as crown ── */
+function HeartSVG({ style = {}, className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 80 54"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={style}
+    >
+      <path
+        d="M40 48
+           C40 48 8 32 8 18
+           C8 10 14 4 22 4
+           C28 4 34 8 40 14
+           C46 8 52 4 58 4
+           C66 4 72 10 72 18
+           C72 32 40 48 40 48 Z"
+        fill="#fdbf00"
+        opacity="0.95"
+      />
+    </svg>
+  )
+}
+
 export default function Screen2({ travelCrownRef }) {
-  const screenRef      = useRef(null)
-  const staticCrownRef = useRef(null)
-  const headlineRef    = useRef(null)
-  const line1Ref       = useRef(null)
-  const line2Ref       = useRef(null)
-  const line3Ref       = useRef(null)
-  const sparkRef       = useRef(null)
-  const preRef         = useRef(null)
-  const subRef         = useRef(null)
-  const played         = useRef(false)
+  const screenRef       = useRef(null)
+
+  /* The static PNG crown — used immediately after travel lands */
+  const staticCrownRef  = useRef(null)
+
+  /* The SVG crown — shown after PNG fades, for the morph loop */
+  const svgCrownRef     = useRef(null)
+
+  /* The SVG heart — morphs from/to crown */
+  const svgHeartRef     = useRef(null)
+
+  const headlineRef     = useRef(null)
+  const line1Ref        = useRef(null)
+  const line2Ref        = useRef(null)
+  const line3Ref        = useRef(null)
+  const preRef          = useRef(null)
+  const subRef          = useRef(null)
+  const played          = useRef(false)
+  const morphLoop       = useRef(null)
 
   const scrollNext = () => {
     const container = screenRef.current?.parentElement
     container?.scrollBy({ top: window.innerHeight, behavior: 'smooth' })
+  }
+
+  /* ── Crown → Heart → Crown morph loop ── */
+  const startMorphLoop = () => {
+    const crown = svgCrownRef.current
+    const heart = svgHeartRef.current
+    if (!crown || !heart) return
+
+    /* Initial state */
+    gsap.set(crown, { opacity: 1, scale: 1 })
+    gsap.set(heart, { opacity: 0, scale: 0.8 })
+
+    const tl = gsap.timeline({ repeat: -1 })
+
+    /* 1. Crown rests — gentle float */
+    tl.to(crown, {
+      y:        -4,
+      duration: 0.8,
+      ease:     'sine.inOut',
+      yoyo:     true,
+      repeat:   2,
+    })
+
+    /* 2. Crown glow intensifies before morph */
+    .to(crown, {
+      filter:
+        'brightness(0) sepia(1) saturate(15) hue-rotate(5deg) ' +
+        'drop-shadow(0 0 10px rgba(253,191,0,1)) ' +
+        'drop-shadow(0 0 28px rgba(253,191,0,1)) ' +
+        'drop-shadow(0 0 48px rgba(253,191,0,0.8))',
+      duration: 0.5,
+      ease:     'power2.in',
+    })
+
+    /* 3. Crown scales down + fades → Heart scales up + fades in */
+    .to(crown, {
+      opacity:  0,
+      scale:    0.6,
+      y:        6,
+      duration: 0.45,
+      ease:     'power2.in',
+    })
+    .fromTo(heart,
+      { opacity: 0, scale: 0.6, y: 6 },
+      {
+        opacity:  1,
+        scale:    1,
+        y:        0,
+        duration: 0.45,
+        ease:     'back.out(1.8)',
+      },
+      '-=0.15'
+    )
+
+    /* 4. Heart beats — two quick pulses */
+    .to(heart, {
+      scale:    1.18,
+      duration: 0.18,
+      ease:     'power2.out',
+      yoyo:     true,
+      repeat:   1,
+    })
+    .to(heart, {
+      scale:    1.12,
+      duration: 0.14,
+      ease:     'power2.out',
+      yoyo:     true,
+      repeat:   1,
+    }, '-=0.05')
+
+    /* 5. Heart glow pulses warmly */
+    .to(heart, {
+      filter:
+        'brightness(0) sepia(1) saturate(15) hue-rotate(355deg) ' +
+        'drop-shadow(0 0 12px rgba(253,191,0,1)) ' +
+        'drop-shadow(0 0 30px rgba(253,100,50,0.9)) ' +
+        'drop-shadow(0 0 50px rgba(253,191,0,0.6))',
+      duration: 0.6,
+      ease:     'sine.inOut',
+      yoyo:     true,
+      repeat:   2,
+    })
+
+    /* 6. Heart floats gently */
+    .to(heart, {
+      y:        -5,
+      duration: 0.9,
+      ease:     'sine.inOut',
+      yoyo:     true,
+      repeat:   2,
+    })
+
+    /* 7. Heart → Crown reverse morph */
+    .to(heart, {
+      opacity:  0,
+      scale:    0.6,
+      y:        -6,
+      duration: 0.45,
+      ease:     'power2.in',
+    })
+    .fromTo(crown,
+      { opacity: 0, scale: 0.6, y: -6 },
+      {
+        opacity:  1,
+        scale:    1,
+        y:        0,
+        filter:   GOLD_FILTER,
+        duration: 0.45,
+        ease:     'back.out(1.8)',
+      },
+      '-=0.15'
+    )
+
+    /* 8. Crown rests before next loop */
+    .to(crown, {
+      duration: 1.2,
+      ease:     'none',
+    })
+
+    morphLoop.current = tl
   }
 
   useEffect(() => {
@@ -53,7 +239,7 @@ export default function Screen2({ travelCrownRef }) {
 
       const tl = gsap.timeline()
 
-      // ── Text lines animate in ──
+      /* Text lines animate in */
       tl.fromTo(preRef.current,
         { opacity: 0, y: 12 },
         { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
@@ -77,7 +263,7 @@ export default function Screen2({ travelCrownRef }) {
         '-=0.65'
       )
 
-      // ── Crown lands and begins performance ──
+      /* Static PNG crown fades in — travel crown handoff */
       .fromTo(staticCrownRef.current,
         { opacity: 0, scale: 1.05 },
         {
@@ -86,146 +272,59 @@ export default function Screen2({ travelCrownRef }) {
           duration: 0.35,
           ease:     'power2.out',
           onStart: () => {
-            // Fade out travel crown — handoff
+            /* Hide travel crown */
             if (travelCrownRef?.current) {
               gsap.to(travelCrownRef.current, {
                 opacity:  0,
-                duration: 0.3,
+                duration: 0.25,
               })
             }
-            // Begin crown performance after it lands
-            setTimeout(() => animateCrown(), 400)
           },
         },
         '-=0.2'
       )
 
-      // ── Sub copy fades in ──
+      /* PNG crown fades out → SVG crown fades in seamlessly */
+      /* Then morph loop begins */
+      .to(staticCrownRef.current, {
+        opacity:  0,
+        duration: 0.4,
+        delay:    0.6,
+        ease:     'power2.in',
+        onComplete: () => {
+          /* Switch to SVG crown */
+          gsap.set(svgCrownRef.current, { opacity: 1 })
+          gsap.set(staticCrownRef.current, { display: 'none' })
+
+          /* Small pause then start the morph loop */
+          setTimeout(() => startMorphLoop(), 600)
+        },
+      })
+
+      /* Sub copy */
       .fromTo(subRef.current,
         { opacity: 0, y: 16 },
         { opacity: 1, y: 0, duration: 0.7 },
-        '-=0.1'
+        '-=0.5'
       )
     }
 
     el.addEventListener('screen-enter', play)
-    return () => el.removeEventListener('screen-enter', play)
+    return () => {
+      el.removeEventListener('screen-enter', play)
+      /* Kill morph loop on unmount */
+      morphLoop.current?.kill()
+    }
   }, [travelCrownRef])
 
-  const animateCrown = () => {
-    const crown   = staticCrownRef.current
-    const sparkEl = sparkRef.current
-    if (!crown || !sparkEl) return
-
-    // ── Measure Spark text width ──
-    // Crown will sweep across the full width of "Spark."
-    const sparkRect = sparkEl.getBoundingClientRect()
-    const crownRect = crown.getBoundingClientRect()
-
-    // How far left can the crown go (above first letter)
-    const rightBound  = 0
-    // How far right (above last letter, minus crown width)
-    const leftBound = sparkRect.width - crownRect.width - 8
-
-    // Current crown x relative to sparkEl
-    // We animate using CSS left inside the relative container
-    // Convert to percentage of sparkEl width for responsiveness
-
-    /*
-      CROWN PERFORMANCE SEQUENCE:
-      1. Settle — tiny bob after landing
-      2. Sweep left to right — slow drift across "Spark"
-      3. Hover at right — pause
-      4. Sweep back right to left — return
-      5. Settle center — comes to rest above S
-      6. Infinite slow glow pulse + micro float forever
-    */
-
-    const masterTl = gsap.timeline()
-
-    // 1. Settle bob
-    masterTl.to(crown, {
-      y:        '-=6',
-      duration: 0.18,
-      ease:     'power2.out',
-      yoyo:     true,
-      repeat:   1,
-    })
-
-    // 2. Sweep left → right
-    .to(crown, {
-      x:        `+=${leftBound - rightBound}`,
-      duration: 1.8,
-      ease:     'power1.inOut',
-    }, '+=0.3')
-
-    // 3. Pause at right — crown bobs gently
-    .to(crown, {
-      y:        '-=4',
-      duration: 0.25,
-      ease:     'power2.out',
-      yoyo:     true,
-      repeat:   1,
-    })
-
-    // 4. Sweep right → left (back)
-    .to(crown, {
-      x:        `-=${rightBound - leftBound}`,
-      duration: 1.8,
-      ease:     'power1.inOut',
-    }, '+=0.3')
-
-    // 5. Settle to slightly right of start (natural resting position)
-    .to(crown, {
-      x:        `+=${(rightBound - leftBound) * 0.2}`,
-      duration: 0.8,
-      ease:     'power2.out',
-    })
-
-    // 6. After sweep — infinite float + glow loop
-    .add(() => {
-      // Infinite micro-float — crown hovers perpetually
-      gsap.to(crown, {
-        y:        '-=6',
-        duration: 1.8,
-        ease:     'sine.inOut',
-        yoyo:     true,
-        repeat:   -1,
-      })
-
-      // Infinite glow pulse using filter intensity
-      // We animate a CSS variable that drives the filter
-      gsap.to(crown, {
-        duration: 1.4,
-        ease:     'sine.inOut',
-        yoyo:     true,
-        repeat:   -1,
-        onUpdate: function() {
-          const p = (Math.sin(Date.now() / 700) + 1) / 2
-          // Interpolate between dim glow and bright glow
-          const blur1 = 6  + p * 10   // 6–16px
-          const blur2 = 16 + p * 20   // 16–36px
-          const blur3 = 30 + p * 20   // 30–50px
-          const op1   = 0.8 + p * 0.2 // 0.8–1.0
-          const op2   = 0.5 + p * 0.4 // 0.5–0.9
-          const op3   = 0.3 + p * 0.3 // 0.3–0.6
-          crown.style.filter =
-            `brightness(0) sepia(1) saturate(10) hue-rotate(5deg) ` +
-            `drop-shadow(0 0 ${blur1}px rgba(253,191,0,${op1})) ` +
-            `drop-shadow(0 0 ${blur2}px rgba(253,191,0,${op2})) ` +
-            `drop-shadow(0 0 ${blur3}px rgba(253,191,0,${op3}))`
-        },
-      })
-
-      // Subtle slow rotation sway — like a crown rocking
-      gsap.to(crown, {
-        rotate:   4,
-        duration: 2.2,
-        ease:     'sine.inOut',
-        yoyo:     true,
-        repeat:   -1,
-      })
-    })
+  /* Shared style for all crown/heart elements */
+  const symbolStyle = {
+    position:  'absolute',
+    bottom:    '0%',
+    left:      '2%',
+    transform: 'translateY(-108%)',
+    width:     'clamp(28px,3.5vw,48px)',
+    filter:    GOLD_FILTER,
   }
 
   return (
@@ -262,43 +361,65 @@ export default function Screen2({ travelCrownRef }) {
         <span className="w-4 md:w-6 h-px bg-gold-600" />
       </p>
 
-      {/*
-        HEADLINE BLOCK
-        overflow: visible — crown sweeps outside bounds
-        position: relative — crown positions inside this
-      */}
+      {/* Headline block */}
       <div
         ref={headlineRef}
         className="relative text-center"
         style={{ overflow: 'visible' }}
       >
+
         {/*
-          STATIC CROWN
-          Positioned above "Spark" left edge initially.
-          animateCrown() moves it left→right across the word.
-          filter: gold + glow — visible on dark background.
-          The glow pulses via onUpdate in animateCrown.
+          THREE layered elements above "Spark":
+          1. staticCrownRef — real PNG, first to appear (handoff from travel)
+          2. svgCrownRef    — SVG crown, takes over from PNG
+          3. svgHeartRef    — SVG heart, morphs from/to crown
+          All share the same absolute position above "Spark"
         */}
+
+        {/* 1. Static PNG crown */}
         <img
           ref={staticCrownRef}
           src={CROWN}
           alt=""
           aria-hidden="true"
-          className="absolute pointer-events-none z-20 object-contain"
+          className="pointer-events-none z-20 object-contain"
           style={{
-            opacity:   0,
-            bottom:    '0%',
-            left:      '2%',
-            transform: 'translateY(-108%)',
-            width:     'clamp(28px,3.5vw,48px)',
-            // Gold filter — visible on dark bg
-            filter:
-              'brightness(0) sepia(1) saturate(10) hue-rotate(5deg) ' +
-              'drop-shadow(0 0 8px rgba(253,191,0,1)) ' +
-              'drop-shadow(0 0 20px rgba(253,191,0,0.8)) ' +
-              'drop-shadow(0 0 32px rgba(253,191,0,0.5))',
+            ...symbolStyle,
+            opacity: 0,
+            position: 'absolute',
           }}
         />
+
+        {/* 2. SVG Crown — for morph animation */}
+        <div
+          ref={svgCrownRef}
+          className="pointer-events-none z-20"
+          style={{
+            ...symbolStyle,
+            opacity: 0,
+            position: 'absolute',
+          }}
+        >
+          <CrownSVG style={{ width: '100%', height: 'auto' }} />
+        </div>
+
+        {/* 3. SVG Heart — morphs from crown */}
+        <div
+          ref={svgHeartRef}
+          className="pointer-events-none z-20"
+          style={{
+            ...symbolStyle,
+            opacity: 0,
+            position: 'absolute',
+            filter:
+              'brightness(0) sepia(1) saturate(10) hue-rotate(355deg) ' +
+              'drop-shadow(0 0 6px rgba(253,191,0,1)) ' +
+              'drop-shadow(0 0 20px rgba(253,100,50,0.9)) ' +
+              'drop-shadow(0 0 36px rgba(253,191,0,0.5))',
+          }}
+        >
+          <HeartSVG style={{ width: '100%', height: 'auto' }} />
+        </div>
 
         {/* Line 1 — Let's make */}
         <div className="overflow-hidden">
@@ -327,18 +448,12 @@ export default function Screen2({ travelCrownRef }) {
         </div>
 
         {/* Line 3 — Spark */}
-        {/*
-          sparkRef on the h1 — used to measure text width
-          for the sweep animation range calculation.
-          id="spark-target" — Screen1 reads for landing coords.
-        */}
         <div
           className="overflow-hidden"
           style={{ overflow: 'visible' }}
         >
           <div ref={line3Ref} className="opacity-0">
             <h1
-              ref={sparkRef}
               id="spark-target"
               className="font-display font-black uppercase
                          leading-[0.88] tracking-[-0.03em]
@@ -374,7 +489,8 @@ export default function Screen2({ travelCrownRef }) {
           onClick={scrollNext}
           className="mt-8 md:mt-10 inline-flex items-center gap-3
                      font-body text-[9px] tracking-[0.5em]
-                     uppercase text-dust hover:text-gold-400
+                     uppercase text-dust
+                     hover:text-gold-400
                      transition-colors duration-300"
         >
           <span>See our work</span>

@@ -163,40 +163,58 @@ export default function Screen4() {
         </div>
       </div>
 
-      {/* WhatsApp CTA */}
       <AnimatePresence>
-        {selected && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{    opacity: 0, y: 8  }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-8"
-          >
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-3
-                         bg-ink text-chalk
-                         font-body font-medium
-                         text-[10px] tracking-[0.35em] uppercase
-                         px-10 py-4
-                         hover:bg-gold-400 hover:text-ink
-                         transition-all duration-300 group"
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                <path d="M11.999 2C6.478 2 2 6.478 2 12c0 1.85.504 3.58 1.38 5.063L2 22l5.084-1.329A9.955 9.955 0 0012 22c5.522 0 10-4.478 10-10S17.522 2 12 2z"/>
-              </svg>
-              Start Conversation on WhatsApp
-              <span className="transition-transform duration-300
-                               group-hover:translate-x-1">→</span>
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
+  {selected && (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{    opacity: 0, y: 8  }}
+      transition={{ duration: 0.45, ease: [0.22,1,0.36,1] }}
+      className="mt-8 flex flex-col sm:flex-row
+                 items-center gap-3"
+    >
+      {/* Primary — go to order builder */}
+      <a
+        href={`/order?intent=${selected}`}
+        className="inline-flex items-center gap-3
+                   bg-ink text-chalk
+                   font-body font-medium
+                   text-[10px] tracking-[0.35em] uppercase
+                   px-10 py-4
+                   hover:bg-gold-400 hover:text-ink
+                   transition-all duration-300 group"
+      >
+        Build Your Order
+        <span className="transition-transform duration-300
+                         group-hover:translate-x-1">→</span>
+      </a>
 
+      {/* Secondary — WhatsApp for quick questions */}
+      <a
+        href={`https://wa.me/2347073495781?text=${encodeURIComponent(
+          INTENTS.find(i => i.id === selected)?.message || 
+          'Hi Shamaro! I have a printing enquiry.'
+        )}`}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2
+                   border border-ink/15 text-dust
+                   font-body text-[10px] tracking-[0.3em]
+                   uppercase px-8 py-4
+                   hover:border-gold-500 hover:text-gold-600
+                   transition-all duration-300"
+      >
+        <svg width="13" height="13"
+             viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M11.999 2C6.478 2 2 6.478 2 12c0 1.85.504 3.58 1.38 5.063L2 22l5.084-1.329A9.955 9.955 0 0012 22c5.522 0 10-4.478 10-10S17.522 2 12 2z"/>
+        </svg>
+        Quick Question
+      </a>
+    </motion.div>
+  )}
+</AnimatePresence>
+            
       <div className="absolute bottom-0 left-0 right-0 h-px
                       bg-gradient-to-r from-transparent
                       via-gold-600/25 to-transparent" />
